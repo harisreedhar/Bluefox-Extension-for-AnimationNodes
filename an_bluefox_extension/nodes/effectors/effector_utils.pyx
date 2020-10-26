@@ -22,11 +22,51 @@ from animation_nodes . math cimport (
     power_Save, floor, ceil, sqrt_Save, invert, reciprocal_Save,
     snap_Save, copySign, floorDivision_Save, logarithm_Save, Quaternion,
     Vector3, Euler3, Matrix4, toMatrix4,toVector3,multMatrix4, toPyMatrix4,
-    invertOrthogonalTransformation,setTranslationRotationScaleMatrix,
-    setRotationXMatrix, setRotationYMatrix, setRotationZMatrix, matrixToQuaternion,
+    invertOrthogonalTransformation,setTranslationRotationScaleMatrix, Matrix3_or_Matrix4,
+    setRotationXMatrix, setRotationYMatrix, setRotationZMatrix, normalizeMatrix_3x3_Part,
     setRotationMatrix, setTranslationMatrix, setIdentityMatrix,quaternionNormalize_InPlace,
     setScaleMatrix,setMatrixTranslation,transposeMatrix_Inplace, setVector3, matrixToEuler
 )
+
+############################################################################################################
+
+cdef void matrixToQuaternion(Quaternion* target, Matrix3_or_Matrix4* m):
+    cdef Matrix3_or_Matrix4 _m
+    normalizeMatrix_3x3_Part(&_m, m)
+    normalizedMatrixToQuaternion(target, &_m)
+
+cdef void normalizedMatrixToQuaternion(Quaternion* q, Matrix3_or_Matrix4* m):
+    cdef float trace, s
+
+    trace = 0.25 * (1.0 + m.a11 + m.a22 + m.a33)
+    if trace > 0.0001:
+        s = sqrt(trace)
+        q.w = s
+        s = 1.0 / (4.0 * s)
+        q.x = -s * (m.a23 - m.a32)
+        q.y = -s * (m.a31 - m.a13)
+        q.z = -s * (m.a12 - m.a21)
+    elif m.a11 > m.a22 and m.a11 > m.a33:
+        s = 2.0 * sqrt(1.0 + m.a11 - m.a22 - m.a33)
+        q.x = 0.25 * s
+        s = 1.0 / s
+        q.w = -s * (m.a23 - m.a32)
+        q.y = s * (m.a21 + m.a12)
+        q.z = s * (m.a31 + m.a13)
+    elif m.a22 > m.a33:
+        s = 2.0 * sqrt(1.0 + m.a22 - m.a11 - m.a33)
+        q.y = 0.25 * s
+        s = 1.0 / s
+        q.w = -s * (m.a31 - m.a13)
+        q.x = s * (m.a21 + m.a12)
+        q.z = s * (m.a32 + m.a23)
+    else:
+        s = 2.0 * sqrt(1.0 + m.a33 - m.a11 - m.a22)
+        q.z = 0.25 * s
+        s = 1.0 / s
+        q.w = -s * (m.a12 - m.a21)
+        q.x = s * (m.a31 + m.a13)
+        q.y = s * (m.a32 + m.a23)
 
 ####################################    Rotation Functions    ##############################################
 

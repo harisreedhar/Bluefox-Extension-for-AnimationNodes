@@ -7,10 +7,6 @@ class BluefoxExtensionMenu(bpy.types.Menu):
 
     def draw(self, context):
         layout = self.layout
-        layout.menu("AN_MT_Colors_menu", text = "Color")
-        layout.menu("AN_MT_Effectors_menu", text = "Effectors")
-        layout.menu("AN_MT_extrafalloffs_menu", text = "Extra Falloffs")
-        layout.menu("AN_MT_Miscellaneous_menu", text = "Miscellaneous")
         insertNode(layout, "an_SverchokInterfaceNode", "Sverchok Interface")
         insertNode(layout, "an_SimpleDeformNode", "Simple Deform")
         insertNode(layout, "an_SwitchListElementsNode", "Switch List Elements")
@@ -21,9 +17,11 @@ class BluefoxExtensionMenu(bpy.types.Menu):
         insertNode(layout, "an_splinetracer", "Spline Tracer")
         insertNode(layout, "an_MemoryNode", "Memory Node")
         insertNode(layout, "an_Memoryfalloff", "Memory Falloff")
-        insertNode(layout, "an_Colormix2", "Color Mix 2")
-        insertNode(layout, "an_CompositeFalloffsNode", "Composite Falloff")
         insertNode(layout, "an_NormalizeFloatsNode", "Normalize Floats")
+        layout.menu("AN_MT_Colors_menu", text = "Color")
+        layout.menu("AN_MT_Effectors_menu", text = "Effectors")
+        layout.menu("AN_MT_extrafalloffs_menu", text = "Extra Falloffs")
+        layout.menu("AN_MT_Miscellaneous_menu", text = "Miscellaneous")
 
 def drawMenu(self, context):
     if context.space_data.tree_type != "an_AnimationNodeTree": return

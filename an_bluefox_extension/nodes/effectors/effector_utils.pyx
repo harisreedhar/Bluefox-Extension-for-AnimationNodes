@@ -1,3 +1,4 @@
+cimport numpy as cnp
 import cython
 from animation_nodes . nodes . matrix.c_utils import* 
 from animation_nodes . math cimport abs as absNumber
